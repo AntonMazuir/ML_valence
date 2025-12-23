@@ -1,3 +1,15 @@
-.venv/
+# Environnement
+venv/
+.env
+
+# Données (On ne versionne jamais le dataset, seulement le code)
 data/
+
+# Python & OS
 __pycache__/
+*.pyc
+.DS_Store
+.vscode/
+
+# Jupyter
+*.ipynb_checkpoints
