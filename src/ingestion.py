@@ -4,6 +4,7 @@ import os
 import json
 from datetime import datetime
 from dotenv import load_dotenv
+import time
 
 load_dotenv()
 
@@ -33,49 +34,61 @@ class IdealistaClient:
             print(f"Erreur Auth: {result.stdout}")
             return None
 
-    def search_valence(self):
-        """Recherche via curl système pour éviter le blocage 406"""
-        print("🔍 Recherche des biens à Valence via System Curl...")
-
-        # On construit la commande exactement comme dans leur doc
-        cmd = [
-            "curl", "-s", "-X", "POST",
-            "-H", f"Authorization: Bearer {self.token}",
-            "-H", "Content-Type: multipart/form-data",
-            "-F", "operation=sale",
-            "-F", "propertyType=homes",
-            "-F", "center=39.4697,-0.3773",
-            "-F", "distance=5000",
-            "-F", "maxItems=50",
-            f"{self.base_url}/search"
+    def search_multi_zones_paginated(self):
+        """Balaye plusieurs zones sur plusieurs pages pour maximiser le dataset"""
+        zones = [
+            {"name": "Centro", "lat": "39.4739", "lon": "-0.3761"},
+            {"name": "Cabanyal_Playa", "lat": "39.4686", "lon": "-0.3243"},
+            {"name": "Benimaclet_Nord", "lat": "39.4822", "lon": "-0.3621"},
+            {"name": "Quatre_Carreres_Sud", "lat": "39.4522", "lon": "-0.3636"},
+            {"name": "Patraix_Ouest", "lat": "39.4622", "lon": "-0.3956"}
         ]
 
-        result = subprocess.run(cmd, capture_output=True, text=True)
+        # On définit le nombre de pages à scanner par zone
+        nb_pages = 3
 
-        try:
-            data = json.loads(result.stdout)
+        for zone in zones:
+            for page in range(1, nb_pages + 1):
+                print(f"📡 Scan {zone['name']} | Page {page}/{nb_pages}...")
 
-            # Sauvegarde du fichier
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            path = f"data/raw/valence_{timestamp}.json"
+                cmd = [
+                    "curl", "-s", "-X", "POST",
+                    "-H", f"Authorization: Bearer {self.token}",
+                    "-H", "Content-Type: multipart/form-data",
+                    "-F", "operation=sale",
+                    "-F", "propertyType=homes",
+                    "-F", f"center={zone['lat']},{zone['lon']}",
+                    "-F", "distance=2000",
+                    "-F", f"numPage={page}", # Paramètre de pagination
+                    "-F", "maxItems=50",
+                    f"{self.base_url}/search"
+                ]
 
-            # S'assurer que le dossier existe
-            os.makedirs("data/raw", exist_ok=True)
+                time.sleep(1.5)  # Pour éviter de spammer l'API trop vite
 
-            with open(path, "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=4, ensure_ascii=False)
+                result = subprocess.run(cmd, capture_output=True, text=True)
 
-            num_items = len(data.get('elementList', []))
-            print(f"✅ Succès ! {num_items} biens trouvés.")
-            print(f"💾 Données sauvegardées dans : {path}")
-            return data
+                try:
+                    data = json.loads(result.stdout)
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    # On inclut le numéro de page dans le nom du fichier
+                    path = f"data/raw/valence_{zone['name']}_p{page}_{timestamp}.json"
 
-        except Exception as e:
-            print(f"❌ Échec de la lecture du JSON : {e}")
-            print(f"Sortie brute : {result.stdout[:200]}...")
-            return None
+                    with open(path, "w", encoding="utf-8") as f:
+                        json.dump(data, f, indent=4, ensure_ascii=False)
+
+                    found = len(data.get('elementList', []))
+                    print(f"✅ {found} biens récupérés.")
+
+                    # Si la page est vide ou contient moins de 50 biens,
+                    # on peut arrêter de boucler sur cette zone
+                    if found < 50:
+                        break
+
+                except Exception as e:
+                    print(f"⚠️ Erreur page {page} zone {zone['name']}: {e}")
 
 if __name__ == "__main__":
     client = IdealistaClient()
     if client.token:
-        client.search_valence()
+        client.search_multi_zones_paginated()
