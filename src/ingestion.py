@@ -45,31 +45,47 @@ class IdealistaClient:
         ]
 
         # On définit le nombre de pages à scanner par zone
-        nb_pages = 3
+        nb_pages = 10
 
         for zone in zones:
             for page in range(1, nb_pages + 1):
                 print(f"📡 Scan {zone['name']} | Page {page}/{nb_pages}...")
 
+                header_file = "headers.txt" # Fichier temporaire pour les headers
+
                 cmd = [
-                    "curl", "-s", "-X", "POST",
+                    "curl", "-s",
+                    "-D", header_file,  # <--- Écrit les headers dans ce fichier
+                    "-X", "POST",
                     "-H", f"Authorization: Bearer {self.token}",
                     "-H", "Content-Type: multipart/form-data",
                     "-F", "operation=sale",
                     "-F", "propertyType=homes",
                     "-F", f"center={zone['lat']},{zone['lon']}",
                     "-F", "distance=2000",
-                    "-F", f"numPage={page}", # Paramètre de pagination
+                    "-F", f"numPage={page}",
                     "-F", "maxItems=50",
                     f"{self.base_url}/search"
                 ]
 
-                time.sleep(1.5)  # Pour éviter de spammer l'API trop vite
-
+                time.sleep(1.5)
                 result = subprocess.run(cmd, capture_output=True, text=True)
+
+                # --- Lecture du Quota depuis le fichier headers.txt ---
+                if os.path.exists(header_file):
+                    with open(header_file, "r") as h:
+                        h_lines = h.readlines()
+                        remaining = next((l for l in h_lines if "x-ratelimit-remaining" in l.lower()), None)
+                        limit = next((l for l in h_lines if "x-ratelimit-limit" in l.lower()), None)
+                        if remaining and limit:
+                            rem_val = remaining.split(":")[-1].strip()
+                            lim_val = limit.split(":")[-1].strip()
+                            print(f"📊 QUOTA : {rem_val} / {lim_val}")
+                # -----------------------------------------------------
 
                 try:
                     data = json.loads(result.stdout)
+                    # ... (le reste de ton code de sauvegarde ne change pas)
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                     # On inclut le numéro de page dans le nom du fichier
                     path = f"data/raw/valence_{zone['name']}_p{page}_{timestamp}.json"

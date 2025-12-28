@@ -3,6 +3,16 @@ import glob
 import os
 import json
 from pathlib import Path
+import numpy as np
+
+
+def haversine_distance(lat1, lon1, lat2, lon2):
+    R = 6371  # Rayon de la Terre en km
+    phi1, phi2 = np.radians(lat1), np.radians(lat2)
+    dphi = np.radians(lat2 - lat1)
+    dlambda = np.radians(lon2 - lon1)
+    a = np.sin(dphi/2)**2 + np.cos(phi1)*np.cos(phi2)*np.sin(dlambda/2)**2
+    return 2 * R * np.arctan2(np.sqrt(a), np.sqrt(1-a))
 
 class DataProcessor:
     def __init__(self, raw_dir="data/raw", processed_dir="data/processed"):
@@ -18,6 +28,7 @@ class DataProcessor:
             return pd.DataFrame()
 
         dfs = []
+
         for file in all_files:
             with open(file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -31,32 +42,41 @@ class DataProcessor:
         return full_df
 
     def clean_for_ml(self, df):
-        """Nettoyage chirurgical pour le modèle"""
-        # 1. Sélection des features prioritaires
+        # 1. Sélection élargie
         features = [
             'propertyCode', 'price', 'size', 'rooms', 'bathrooms',
             'floor', 'hasLift', 'exterior', 'district', 'neighborhood',
             'latitude', 'longitude', 'status', 'propertyType'
         ]
-
-        # On ne garde que les colonnes qui existent vraiment
         existing_features = [c for c in features if c in df.columns]
         df = df[existing_features].copy()
 
-        # 2. Nettoyage des types
+        # 2. Nettoyage des types et remplissage des vides
         df['price'] = pd.to_numeric(df['price'], errors='coerce')
         df['size'] = pd.to_numeric(df['size'], errors='coerce')
+        df['hasLift'] = df['hasLift'].fillna(False).astype(int)
+        df['exterior'] = df['exterior'].fillna(True).astype(int)
 
-        # Étages : on remplace les valeurs textuelles par des chiffres
-        # (ex: 'bj' -> 0, 'en' -> 0.5)
-        df['floor'] = pd.to_numeric(df['floor'], errors='coerce').fillna(0)
+        # 3. FEATURE ENGINEERING : Distances stratégiques
+        # Coordonnées Plaza del Ayuntamiento (Centre)
+        df['dist_center'] = haversine_distance(df['latitude'], df['longitude'], 39.470, -0.376)
+        # Coordonnées Plage (Malvarrosa/Cabanyal)
+        df['dist_beach'] = haversine_distance(df['latitude'], df['longitude'], 39.470, -0.324)
 
-        # 3. Calcul de la cible (Target)
-        df['price_per_m2'] = df['price'] / df['size']
+        # 4. Traitement du "Status"
+        # On simplifie : si c'est vide, on considère que c'est "bon état" par défaut
+        df['status'] = df['status'].fillna('good')
 
-        # 4. Filtre de qualité (on enlève le bruit)
-        df = df[df['price'] > 30000]  # Pas de garages
-        df = df[df['size'] > 15]      # Pas de débarras
+        # 5. Traitement des étages (Floor)
+        # On transforme 'bj' (bajo) en 0, 'en' (entresuelo) en 0.5, etc.
+        floor_map = {'bj': 0, 'en': 0.5, 'st': 0, 'ss': -1}
+        df['floor'] = df['floor'].replace(floor_map)
+        df['floor'] = pd.to_numeric(df['floor'], errors='coerce').fillna(1) # Étage 1 par défaut
+
+        # 6. Filtres Anti-Bruit (Outliers)
+        # On enlève le luxe extrême et les erreurs de saisie
+        df = df[(df['price'] > 40000) & (df['price'] < 1200000)]
+        df = df[(df['size'] > 20) & (df['size'] < 400)]
 
         return df
 

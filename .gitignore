@@ -18,6 +18,9 @@ __pycache__/
 # Logs
 logs/*.log
 
+*.txt
+
 catboost_info/
 
-requirements.txt
+# Modèles sauvegardés
+models/

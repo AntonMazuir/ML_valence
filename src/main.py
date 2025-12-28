@@ -4,7 +4,7 @@ import os
 # On s'assure que le dossier src est bien reconnu
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
-from ingestion import IdealistaIngestion
+from ingestion import IdealistaClient
 from processing import process_data
 from model import ValenceModel
 
@@ -17,7 +17,7 @@ def run_pipeline():
     api_key = "TON_API_KEY"
     secret = "TON_SECRET"
 
-    ingestor = IdealistaIngestion(api_key, secret)
+    ingestor = IdealistaClient(api_key, secret)
     ingestor.search_multi_zones_paginated() # Ta version avec boucles
     print("✅ Ingestion terminée.\n")
 
