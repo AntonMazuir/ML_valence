@@ -12,6 +12,7 @@ __pycache__/
 .vscode/
 
 # Jupyter
+notebooks/
 *.ipynb_checkpoints
 .ipynb
 
