@@ -1,35 +1,42 @@
 import sys
 import os
+from pathlib import Path
 
-# On s'assure que le dossier src est bien reconnu
+# On s'assure que le dossier racine est dans le path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 from ingestion import IdealistaClient
-from processing import process_data
+from processing import DataProcessor
 from model import ValenceModel
 
 def run_pipeline():
     print("🚀 DÉMARRAGE DU PIPELINE INVEST VALENCE\n")
 
+    # Création des dossiers nécessaires s'ils manquent
+    for folder in ['data/raw', 'data/processed', 'models']:
+        os.makedirs(folder, exist_ok=True)
+
     # 1. INGESTION
     print("--- 📡 ÉTAPE 1 : RÉCUPÉRATION DES DONNÉES ---")
-    # Remplace par tes vrais identifiants ou utilise des variables d'env
-    api_key = "TON_API_KEY"
-    secret = "TON_SECRET"
-
-    ingestor = IdealistaClient(api_key, secret)
-    ingestor.search_multi_zones_paginated() # Ta version avec boucles
+    # Le client récupère auto ses clés dans le .env
+    client = IdealistaClient()
+    if client.token:
+        client.search_multi_zones_paginated()
     print("✅ Ingestion terminée.\n")
 
     # 2. PROCESSING
     print("--- 🧹 ÉTAPE 2 : NETTOYAGE ET PRÉPARATION ---")
-    process_data() # Ton script qui génère le CSV final
+    processor = DataProcessor()
+    raw_df = processor.load_all_json()
+    if not raw_df.empty:
+        clean_df = processor.clean_for_ml(raw_df)
+        processor.save_processed(clean_df)
     print("✅ Données traitées et dédupliquées.\n")
 
     # 3. TRAINING
     print("--- 🧠 ÉTAPE 3 : ENTRAÎNEMENT DE L'IA ---")
     ai = ValenceModel()
-    ai.train() # Il va lire data/processed/valence_training_set.csv
+    ai.train()
     print("✅ Modèle mis à jour et sauvegardé.\n")
 
     print("🏁 PIPELINE TERMINÉ AVEC SUCCÈS !")
