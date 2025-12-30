@@ -8,6 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from ingestion import IdealistaClient
 from processing import DataProcessor
 from model import ValenceModel
+from scan import detect_opportunities, print_report
 
 def run_pipeline():
     print("🚀 DÉMARRAGE DU PIPELINE INVEST VALENCE\n")
@@ -38,6 +39,17 @@ def run_pipeline():
     ai = ValenceModel()
     ai.train()
     print("✅ Modèle mis à jour et sauvegardé.\n")
+
+    # 4. SCANNER LE MARCHÉ
+    print("--- 🎯 ÉTAPE 4 : DÉTECTION DES OPPORTUNITÉS ---")
+    opportunities = detect_opportunities()
+
+    if not opportunities.empty:
+        print_report(opportunities)
+
+    from datetime import datetime
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+    opportunities.to_csv(f'data/opps_valence_{timestamp}.csv', index=False)
 
     print("🏁 PIPELINE TERMINÉ AVEC SUCCÈS !")
 

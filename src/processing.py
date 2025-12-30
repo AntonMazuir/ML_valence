@@ -46,7 +46,8 @@ class DataProcessor:
         features = [
             'propertyCode', 'price', 'size', 'rooms', 'bathrooms',
             'floor', 'hasLift', 'exterior', 'district', 'neighborhood',
-            'latitude', 'longitude', 'status', 'propertyType'
+            'latitude', 'longitude', 'status', 'propertyType',
+            'bath_ratio', 'light_score'
         ]
         existing_features = [c for c in features if c in df.columns]
         df = df[existing_features].copy()
@@ -63,9 +64,33 @@ class DataProcessor:
         # Coordonnées Plage (Malvarrosa/Cabanyal)
         df['dist_beach'] = haversine_distance(df['latitude'], df['longitude'], 39.470, -0.324)
 
+        # Ratio Salle de bain / Pièces (Standing)
+        # Un 2 chambres / 2 SDB vaut plus qu'un 4 chambres / 1 SDB
+        df['bath_ratio'] = df['bathrooms'] / df['rooms']
+        # On gère les divisions par zéro si rooms=0 (studios)
+        df['bath_ratio'] = df['bath_ratio'].replace([np.inf, -np.inf], 1)
+
+        # Score de Lumière/Étage
+        # Un étage élevé avec balcon/extérieur = Prime de prix à Valence
+        df['light_score'] = df['floor'] * df['exterior']
+
         # 4. Traitement du "Status"
         # On simplifie : si c'est vide, on considère que c'est "bon état" par défaut
         df['status'] = df['status'].fillna('good')
+
+        # On élimine la Nue-propriété (Nuda propiedad) ou le fait que la maison soit en vente à la mort du propriétaire
+        prohibited_terms = ['nuda propiedad', 'usufructo', 'persona mayor', 'inmueble sin posesión']
+        mask = df['description'].str.lower().contains('|'.join(prohibited_terms), na=False)
+        df = df[~mask]
+
+        # 2. Filtres de "Bon Sens" Immobilier
+        # On enlève les biens trop petits (souvent des locaux/garages mal classés)
+        # ou les prix au m2 délirants (erreurs de saisie)
+        df['price_m2'] = df['price'] / df['size']
+
+        df = df[
+            (df['size'] >= 30) & (df['size'] <= 400) &      # Tailles réalistes
+            (df['price_m2'] >= 700) & (df['price_m2'] <= 7000)] # Prix m2 cohérents pour Valence
 
         # 5. Traitement des étages (Floor)
         # On transforme 'bj' (bajo) en 0, 'en' (entresuelo) en 0.5, etc.
