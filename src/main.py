@@ -9,6 +9,7 @@ from ingestion import IdealistaClient
 from processing import DataProcessor
 from model import ValenceModel
 from scan import detect_opportunities, print_report
+from dashboard import generate_html_dashboard
 
 def run_pipeline():
     print("🚀 DÉMARRAGE DU PIPELINE INVEST VALENCE\n")
@@ -42,14 +43,26 @@ def run_pipeline():
 
     # 4. SCANNER LE MARCHÉ
     print("--- 🎯 ÉTAPE 4 : DÉTECTION DES OPPORTUNITÉS ---")
-    opportunities = detect_opportunities()
+    # On s'assure que le scanner pointe vers le dernier dataset traité
+    opportunities = detect_opportunities(data_path='data/processed/valence_training_set.csv')
 
     if not opportunities.empty:
         print_report(opportunities)
 
-    from datetime import datetime
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-    opportunities.to_csv(f'data/opps_valence_{timestamp}.csv', index=False)
+        # Sauvegarde datée
+        from datetime import datetime
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+        output_file = f'data/opps_valence_{timestamp}.csv'
+        opportunities.to_csv(output_file, index=False)
+        print(f"✅ Liste sauvegardée : {output_file}")
+
+        # 5. GÉNÉRATION DU DASHBOARD HTML
+        print("\n--- 📊 ÉTAPE 5 : GÉNÉRATION DU DASHBOARD HTML ---")
+        generate_html_dashboard(opportunities)
+        print("✅ Dashboard HTML généré avec succès.\n")
+
+    else:
+        print("ℹ️ Aucune opportunité ne correspond aux critères de marge (>15%).")
 
     print("🏁 PIPELINE TERMINÉ AVEC SUCCÈS !")
 
