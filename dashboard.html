@@ -3,382 +3,180 @@
     <html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>Invest Valence - Top Opportunités</title>
+        <meta name="referrer" content="no-referrer">
+        <title>Invest Valence V5 - Terminal Pro</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <style>
-            body { background-color: #f8f9fa; padding: 20px; }
-            .card { transition: transform 0.2s; margin-bottom: 20px; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-            .card:hover { transform: scale(1.02); }
-            .badge-profit { position: absolute; top: 10px; right: 10px; font-size: 1.2rem; padding: 10px; }
-            .img-container { height: 200px; overflow: hidden; background-color: #ddd; }
-            .img-container img { width: 100%; height: 100%; object-fit: cover; }
+            body { background-color: #f4f7f6; font-family: 'Inter', sans-serif; }
+            .header-zone { background: #1a1a1a; color: white; padding: 40px 0; margin-bottom: 40px; }
+            .card { border: none; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s; height: 100%; }
+            .card:hover { transform: translateY(-10px); box-shadow: 0 15px 45px rgba(0,0,0,0.1); }
+            .img-container { height: 220px; position: relative; background: #222; }
+            .img-container img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+            .score-badge { position: absolute; top: 15px; left: 15px; background: #ff4757; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; z-index: 10; }
+            .momentum-badge { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); color: #2f3542; padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; z-index: 10; }
+            .price-main { font-size: 1.6rem; font-weight: 800; color: #2d3436; }
+            .est-price { font-size: 0.9rem; color: #a4b0be; text-decoration: line-through; }
+            .invest-bar { height: 6px; background: #eee; border-radius: 3px; margin: 15px 0; }
+            .invest-progress { height: 100%; background: linear-gradient(90deg, #ff4757, #2ed573); border-radius: 3px; }
         </style>
     </head>
     <body>
+        <div class="header-zone text-center">
+            <div class="container">
+                <h1 class="display-4 fw-bold">🎯 Valence Real Estate V5</h1>
+                <p class="lead opacity-75">Intelligence Artificielle & Momentum de Gentrification</p>
+                <span class="badge bg-primary">Scan du 07/01/2026 17:04</span>
+            </div>
+        </div>
+
         <div class="container">
-            <h1 class="mb-4">🎯 Top 20 Opportunités Valence <small class="text-muted" style="font-size: 1rem;">Mise à jour : 03/01/2026 09:41</small></h1>
-            <div class="row">
+            <div class="row g-4">
     
                 <div class="col-md-4">
                     <div class="card">
-                        <span class="badge bg-success badge-profit">+55%</span>
                         <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
+                            <div class="score-badge">Score: 71/100</div>
+                            <div class="momentum-badge">⚡ 6.27</div>
+                            <img src="https://via.placeholder.com/400x250?text=Image+Non+Disponible" alt="Annonce" loading="lazy">
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title">150,000 € <small class="text-muted">vs 334,068 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>La Creu del Grau</strong><br>
-                                📏 124 m² | 3 ch. | Ét. 2.0<br>
-                                🚀 Gain est. : <strong>184,068 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/108852700/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="price-main">339,000 €</span>
+                                <span class="est-price">427,342 €</span>
+                            </div>
+                            <h6 class="text-primary mb-3">
+                                <i class="fa-solid fa-location-dot"></i> La Seu  <i class="fa-solid fa-tree text-success" title="Terrasse"></i>
+                            </h6>
+
+                            <div class="row text-muted mb-2" style="font-size: 0.85rem;">
+                                <div class="col-6"><i class="fa-solid fa-ruler-combined"></i> 107 m²</div>
+                                <div class="col-6"><i class="fa-solid fa-door-open"></i> 2 ch.</div>
+                            </div>
+
+                            <div class="invest-bar">
+                                <div class="invest-progress" style="width: 71%"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-success-subtle text-success">Marge: +20%</span>
+                                <span class="fw-bold text-dark">+88,342 €</span>
+                            </div>
+
+                            <a href="https://www.idealista.com/inmueble/109787947/" target="_blank" class="btn btn-dark w-100 py-2 fw-bold">VOIR L'OPPORTUNITÉ</a>
                         </div>
                     </div>
                 </div>
         
                 <div class="col-md-4">
                     <div class="card">
-                        <span class="badge bg-success badge-profit">+43%</span>
                         <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
+                            <div class="score-badge">Score: 59/100</div>
+                            <div class="momentum-badge">⚡ 1.39</div>
+                            <img src="https://via.placeholder.com/400x250?text=Image+Non+Disponible" alt="Annonce" loading="lazy">
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title">289,000 € <small class="text-muted">vs 511,804 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>Malilla</strong><br>
-                                📏 135 m² | 3 ch. | Ét. 6.0<br>
-                                🚀 Gain est. : <strong>222,804 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/109965775/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="price-main">200,000 €</span>
+                                <span class="est-price">229,711 €</span>
+                            </div>
+                            <h6 class="text-primary mb-3">
+                                <i class="fa-solid fa-location-dot"></i> Nou Moles  <i class="fa-solid fa-tree text-success" title="Terrasse"></i> <i class="fa-solid fa-arrow-up-z text-primary" title="Dernier étage"></i>
+                            </h6>
+
+                            <div class="row text-muted mb-2" style="font-size: 0.85rem;">
+                                <div class="col-6"><i class="fa-solid fa-ruler-combined"></i> 53 m²</div>
+                                <div class="col-6"><i class="fa-solid fa-door-open"></i> 2 ch.</div>
+                            </div>
+
+                            <div class="invest-bar">
+                                <div class="invest-progress" style="width: 59%"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-success-subtle text-success">Marge: +12%</span>
+                                <span class="fw-bold text-dark">+29,711 €</span>
+                            </div>
+
+                            <a href="https://www.idealista.com/inmueble/109007854/" target="_blank" class="btn btn-dark w-100 py-2 fw-bold">VOIR L'OPPORTUNITÉ</a>
                         </div>
                     </div>
                 </div>
         
                 <div class="col-md-4">
                     <div class="card">
-                        <span class="badge bg-success badge-profit">+40%</span>
                         <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
+                            <div class="score-badge">Score: 47/100</div>
+                            <div class="momentum-badge">⚡ 1.37</div>
+                            <img src="https://via.placeholder.com/400x250?text=Image+Non+Disponible" alt="Annonce" loading="lazy">
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title">350,000 € <small class="text-muted">vs 593,103 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>Ciutat de les Arts i de les Ciencies</strong><br>
-                                📏 104 m² | 3 ch. | Ét. 8.0<br>
-                                🚀 Gain est. : <strong>243,103 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/109603173/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="price-main">89,900 €</span>
+                                <span class="est-price">102,273 €</span>
+                            </div>
+                            <h6 class="text-primary mb-3">
+                                <i class="fa-solid fa-location-dot"></i> La Petxina 
+                            </h6>
+
+                            <div class="row text-muted mb-2" style="font-size: 0.85rem;">
+                                <div class="col-6"><i class="fa-solid fa-ruler-combined"></i> 22 m²</div>
+                                <div class="col-6"><i class="fa-solid fa-door-open"></i> 1 ch.</div>
+                            </div>
+
+                            <div class="invest-bar">
+                                <div class="invest-progress" style="width: 47%"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-success-subtle text-success">Marge: +12%</span>
+                                <span class="fw-bold text-dark">+12,373 €</span>
+                            </div>
+
+                            <a href="https://www.idealista.com/inmueble/110014618/" target="_blank" class="btn btn-dark w-100 py-2 fw-bold">VOIR L'OPPORTUNITÉ</a>
                         </div>
                     </div>
                 </div>
         
                 <div class="col-md-4">
                     <div class="card">
-                        <span class="badge bg-success badge-profit">+40%</span>
                         <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
+                            <div class="score-badge">Score: 35/100</div>
+                            <div class="momentum-badge">⚡ -1.71</div>
+                            <img src="https://via.placeholder.com/400x250?text=Image+Non+Disponible" alt="Annonce" loading="lazy">
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title">223,000 € <small class="text-muted">vs 375,292 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>La Creu del Grau</strong><br>
-                                📏 158 m² | 1 ch. | Ét. 0.0<br>
-                                🚀 Gain est. : <strong>152,292 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/107295953/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="price-main">435,000 €</span>
+                                <span class="est-price">498,127 €</span>
+                            </div>
+                            <h6 class="text-primary mb-3">
+                                <i class="fa-solid fa-location-dot"></i> Vara de Quart  <i class="fa-solid fa-tree text-success" title="Terrasse"></i> <i class="fa-solid fa-arrow-up-z text-primary" title="Dernier étage"></i>
+                            </h6>
+
+                            <div class="row text-muted mb-2" style="font-size: 0.85rem;">
+                                <div class="col-6"><i class="fa-solid fa-ruler-combined"></i> 300 m²</div>
+                                <div class="col-6"><i class="fa-solid fa-door-open"></i> 2 ch.</div>
+                            </div>
+
+                            <div class="invest-bar">
+                                <div class="invest-progress" style="width: 35%"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-success-subtle text-success">Marge: +12%</span>
+                                <span class="fw-bold text-dark">+63,127 €</span>
+                            </div>
+
+                            <a href="https://www.idealista.com/inmueble/107600722/" target="_blank" class="btn btn-dark w-100 py-2 fw-bold">VOIR L'OPPORTUNITÉ</a>
                         </div>
                     </div>
                 </div>
         
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+34%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">85,000 € <small class="text-muted">vs 130,738 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>Torrefiel</strong><br>
-                                📏 42 m² | 1 ch. | Ét. 0.0<br>
-                                🚀 Gain est. : <strong>45,738 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/109262425/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+34%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">110,000 € <small class="text-muted">vs 167,037 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>El Cabanyal-El Canyamelar</strong><br>
-                                📏 91 m² | 3 ch. | Ét. 2.0<br>
-                                🚀 Gain est. : <strong>57,037 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/109354381/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+31%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">179,000 € <small class="text-muted">vs 262,426 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>Playa de la Malvarrosa</strong><br>
-                                📏 77 m² | 2 ch. | Ét. 0.0<br>
-                                🚀 Gain est. : <strong>83,426 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/110105916/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+31%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">54,000 € <small class="text-muted">vs 79,076 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>Playa de la Malvarrosa</strong><br>
-                                📏 58 m² | 2 ch. | Ét. 1.0<br>
-                                🚀 Gain est. : <strong>25,076 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/106421227/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+31%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">105,000 € <small class="text-muted">vs 152,746 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>Tres Forques</strong><br>
-                                📏 50 m² | 2 ch. | Ét. 2.0<br>
-                                🚀 Gain est. : <strong>47,746 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/110195092/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+31%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">300,000 € <small class="text-muted">vs 435,126 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>Na Rovella</strong><br>
-                                📏 112 m² | 3 ch. | Ét. 9.0<br>
-                                🚀 Gain est. : <strong>135,126 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/108917159/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+30%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">430,000 € <small class="text-muted">vs 617,263 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>Ciutat de les Arts i de les Ciencies</strong><br>
-                                📏 111 m² | 3 ch. | Ét. 8.0<br>
-                                🚀 Gain est. : <strong>187,263 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/110184113/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+29%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">142,000 € <small class="text-muted">vs 202,646 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>La Creu del Grau</strong><br>
-                                📏 60 m² | 1 ch. | Ét. 0.0<br>
-                                🚀 Gain est. : <strong>60,646 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/109327717/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+28%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">99,000 € <small class="text-muted">vs 138,962 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>L'Amistat</strong><br>
-                                📏 35 m² | 1 ch. | Ét. 0.0<br>
-                                🚀 Gain est. : <strong>39,962 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/109690204/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+28%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">260,000 € <small class="text-muted">vs 363,084 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>La Raiosa</strong><br>
-                                📏 132 m² | 3 ch. | Ét. 2.0<br>
-                                🚀 Gain est. : <strong>103,084 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/110173967/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+28%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">330,000 € <small class="text-muted">vs 458,915 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>El Botànic</strong><br>
-                                📏 99 m² | 3 ch. | Ét. 3.0<br>
-                                🚀 Gain est. : <strong>128,915 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/109670538/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+27%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">85,000 € <small class="text-muted">vs 117,270 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>Torrefiel</strong><br>
-                                📏 48 m² | 0 ch. | Ét. 0.0<br>
-                                🚀 Gain est. : <strong>32,270 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/107329688/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+27%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">220,000 € <small class="text-muted">vs 301,540 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>El Cabanyal-El Canyamelar</strong><br>
-                                📏 80 m² | 3 ch. | Ét. 1.0<br>
-                                🚀 Gain est. : <strong>81,540 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/110147984/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+26%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">170,000 € <small class="text-muted">vs 231,818 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>El Cabanyal-El Canyamelar</strong><br>
-                                📏 95 m² | 3 ch. | Ét. 1.0<br>
-                                🚀 Gain est. : <strong>61,818 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/110085191/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+26%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">320,000 € <small class="text-muted">vs 435,967 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>Na Rovella</strong><br>
-                                📏 96 m² | 2 ch. | Ét. 4.0<br>
-                                🚀 Gain est. : <strong>115,967 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/109951712/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="col-md-4">
-                    <div class="card">
-                        <span class="badge bg-success badge-profit">+26%</span>
-                        <div class="img-container">
-                            <img src="https://via.placeholder.com/300x200?text=Appartement" alt="Appartement">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">175,000 € <small class="text-muted">vs 237,714 €</small></h5>
-                            <p class="card-text">
-                                📍 <strong>Torrefiel</strong><br>
-                                📏 90 m² | 4 ch. | Ét. 5.0<br>
-                                🚀 Gain est. : <strong>62,714 €</strong>
-                            </p>
-                            <a href="https://www.idealista.com/inmueble/110151851/" target="_blank" class="btn btn-primary w-100">Voir l'annonce</a>
-                        </div>
-                    </div>
-                </div>
-        
+            </div>
+            <div class="text-center py-5">
+                <p class="text-muted">Généré par ton IA Valence V5 - Intelligence Immobilière Industrielle</p>
             </div>
         </div>
     </body>

@@ -45,7 +45,7 @@ class IdealistaClient:
         ]
 
         # On définit le nombre de pages à scanner par zone
-        nb_pages = 5
+        nb_pages = 1
 
         for zone in zones:
             for page in range(1, nb_pages + 1):

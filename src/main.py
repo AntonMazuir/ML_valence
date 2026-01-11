@@ -21,10 +21,11 @@ def run_pipeline():
     # 1. INGESTION
     print("--- 📡 ÉTAPE 1 : RÉCUPÉRATION DES DONNÉES ---")
     # Le client récupère auto ses clés dans le .env
-    client = IdealistaClient()
-    if client.token:
-        client.search_multi_zones_paginated()
-    print("✅ Ingestion terminée.\n")
+    #client = IdealistaClient()
+    #if client.token:
+    #    client.search_multi_zones_paginated()
+    #print("✅ Ingestion terminée.\n")
+    print("✅ Ingestion sautée.\n")
 
     # 2. PROCESSING
     print("--- 🧹 ÉTAPE 2 : NETTOYAGE ET PRÉPARATION ---")
