@@ -9,46 +9,58 @@ class ValenceModel:
     def __init__(self, model_path='models/valence_model.cbm'):
         self.model_path = model_path
         self.model = None
-        # Liste exhaustive des 32 variables (alignée sur processing.py)
+
+        # --- ÉTAPE 1 : DÉFINITION DES FEATURES (LA BRIQUE UNIQUEMENT) ---
+        # On retire tout ce qui est financier (yield, investment) pour éviter la triche
         self.features = [
             'size', 'rooms', 'bathrooms', 'floor_clean', 'hasLift', 'exterior',
-            'district', 'neighborhood', 'latitude', 'longitude',
-            'bath_ratio', 'light_score', 'geo_cluster',
-            'dist_center', 'dist_beach', 'dist_turia', 'dist_arts_sciences',
-            'dist_upv', 'dist_metro_xativa', 'dist_metro',
-            'is_house', 'needs_reform', 'is_ground_floor',
-            'has_parking', 'is_penthouse', 'has_terrace', 'has_balcony',
-            'is_last_floor', 'is_south_facing',
-            'realtime_growth', 'momentum_score', 'historical_growth'
+            'light_score', 'district', 'neighborhood', 'latitude', 'longitude',
+            'needs_reform', 'geo_cluster', 'has_terrace', 'has_balcony',
+            'is_last_floor', 'is_south_facing', 'dist_center', 'dist_beach',
+            'dist_turia', 'dist_arts_sciences', 'dist_upv', 'dist_metro_xativa'
         ]
-        # Colonnes que l'IA traite comme du texte/catégories
+
+        # Variables textuelles à encoder
         self.cat_features = ['district', 'neighborhood', 'geo_cluster']
 
         if os.path.exists(self.model_path):
             self.load()
 
     def train(self, csv_path='data/processed/valence_training_set.csv'):
+        # Chargement du dataset généré par le processor
         df = pd.read_csv(csv_path)
 
-        # Nettoyage de sécurité pour les catégories
-        for col in self.cat_features:
-            df[col] = df[col].fillna("Unknown").astype(str)
+        # --- ÉTAPE 2 : SÉCURITÉ GÉO-CLUSTER ---
+        # Si pour une raison X le cluster manque, on ne bloque pas tout
+        if 'geo_cluster' not in df.columns:
+            print("⚠️ geo_cluster manquant, vérifie ton processing.py")
+            if 'geo_cluster' in self.cat_features: self.cat_features.remove('geo_cluster')
+            if 'geo_cluster' in self.features: self.features.remove('geo_cluster')
 
-        X = df[self.features]
-        # Utilisation du Log pour stabiliser les prédictions sur les gros montants
-        y = np.log1p(df['price'])
+        # Nettoyage des données catégorielles
+        for col in self.cat_features:
+            if col in df.columns:
+                df[col] = df[col].fillna("Unknown").astype(str)
+
+        # On ne garde que les features qui existent réellement dans le CSV
+        features_to_use = [f for f in self.features if f in df.columns]
+
+        X = df[features_to_use]
+        y = np.log1p(df['price']) # On prédit le Log du prix pour plus de précision
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15, random_state=42)
 
-        print(f"🚀 Entraînement V5 Industrielle sur {len(df)} annonces...")
+        print(f"🚀 Entraînement V5 Robuste sur {len(df)} annonces...")
+        print(f"🧠 L'IA analyse {len(features_to_use)} caractéristiques physiques.")
 
-        # Initialisation propre du régresseur
+        # --- ÉTAPE 3 : CONFIGURATION CATBOOST (GRID SEARCH OPTIMIZED) ---
         self.model = CatBoostRegressor(
-            iterations=1500,        # Plus d'itérations pour plus de features
-            learning_rate=0.03,    # Plus lent pour plus de précision
-            depth=8,
+            iterations=2000,
+            learning_rate=0.02,
+            depth=4,
+            l2_leaf_reg=1,
             loss_function='RMSE',
-            eval_metric='MAE',     # On surveille l'erreur en euros
+            eval_metric='MAE',
             early_stopping_rounds=100,
             random_seed=42,
             verbose=100
@@ -56,28 +68,19 @@ class ValenceModel:
 
         self.model.fit(
             X_train, y_train,
-            cat_features=self.cat_features,
+            cat_features=[c for c in self.cat_features if c in features_to_use],
             eval_set=(X_test, y_test),
             use_best_model=True
         )
 
-        # Évaluation
+        # --- ÉTAPE 4 : ÉVALUATION RÉELLE ---
         preds_log = self.model.predict(X_test)
-        actuals = np.expm1(y_test)
-        predictions = np.expm1(preds_log)
-
-        mae = mean_absolute_error(actuals, predictions)
+        mae = mean_absolute_error(np.expm1(y_test), np.expm1(preds_log))
         r2 = r2_score(y_test, preds_log)
 
-        print(f"\n📊 RÉSULTATS V5 :")
+        print(f"\n📊 PERFORMANCE FINALE :")
         print(f"Erreur Moyenne (MAE) : {mae:,.0f} €")
-        print(f"Précision (R2 Score) : {r2:.2%}")
-
-        # Feature Importance : Savoir ce qui fait le prix à Valence
-        print("\n🔥 Top 5 facteurs déterminants :")
-        importances = self.model.get_feature_importance()
-        for score, name in sorted(zip(importances, self.features), reverse=True)[:5]:
-            print(f"- {name}: {score:.2f}%")
+        print(f"Fiabilité (R2) : {r2:.2%}")
 
         self.save()
 
@@ -92,8 +95,11 @@ class ValenceModel:
         print("🧠 Modèle V5 chargé.")
 
     def predict(self, df):
-        # Prétraitement des catégories pour le scan
+        # Utilise les mêmes colonnes que l'entraînement
+        features_to_use = [f for f in self.features if f in df.columns]
         for col in self.cat_features:
-            df[col] = df[col].fillna("Unknown").astype(str)
-        preds_log = self.model.predict(df[self.features])
+            if col in df.columns:
+                df[col] = df[col].fillna("Unknown").astype(str)
+
+        preds_log = self.model.predict(df[features_to_use])
         return np.expm1(preds_log)

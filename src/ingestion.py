@@ -81,11 +81,9 @@ class IdealistaClient:
                             rem_val = remaining.split(":")[-1].strip()
                             lim_val = limit.split(":")[-1].strip()
                             print(f"📊 QUOTA : {rem_val} / {lim_val}")
-                # -----------------------------------------------------
 
                 try:
                     data = json.loads(result.stdout)
-                    # ... (le reste de ton code de sauvegarde ne change pas)
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                     # On inclut le numéro de page dans le nom du fichier
                     path = f"data/raw/valence_{zone['name']}_p{page}_{timestamp}.json"

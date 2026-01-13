@@ -4,6 +4,7 @@ from model import ValenceModel
 import os
 
 def detect_opportunities(data_path='data/processed/valence_training_set.csv'):
+    # --- ÉTAPE 1 : INITIALISATION ---
     ai = ValenceModel()
 
     if not os.path.exists(data_path):
@@ -11,78 +12,79 @@ def detect_opportunities(data_path='data/processed/valence_training_set.csv'):
         return pd.DataFrame()
 
     df = pd.read_csv(data_path)
+    print(f"🕵️ Analyse de {len(df)} annonces (Système V5 Robuste)...")
 
-    # 1. Alignement des features sur le modèle V5
-    features = [
-        'size', 'rooms', 'bathrooms', 'floor_clean', 'hasLift', 'exterior',
-        'district', 'neighborhood', 'latitude', 'longitude',
-        'bath_ratio', 'light_score', 'geo_cluster',
-        'dist_center', 'dist_beach', 'dist_turia', 'dist_arts_sciences',
-        'dist_upv', 'dist_metro_xativa', 'dist_metro',
-        'is_house', 'needs_reform', 'is_ground_floor',
-        'has_parking', 'is_penthouse', 'has_terrace', 'has_balcony',
-        'is_last_floor', 'is_south_facing',
-        'realtime_growth', 'momentum_score', 'historical_growth'
-    ]
-
-    print(f"🕵️ Analyse de {len(df)} annonces (V5 Industrielle)...")
-
-    # Vérification colonnes
-    missing = [c for c in features if c not in df.columns]
-    if missing:
-        print(f"❌ Colonnes manquantes : {missing}")
-        return pd.DataFrame()
-
-    # 2. Prédiction intelligente
+    # --- ÉTAPE 2 : PRÉDICTION DE LA VALEUR DE MARCHÉ ---
+    # L'IA estime le "Juste Prix" intrinsèque (sans regarder le prix affiché)
     df['estimated_price'] = ai.predict(df)
 
-    # 3. Calcul des métriques financières
-    df['profit_potential'] = df['estimated_price'] - df['price']
-    df['discount_pct'] = (df['profit_potential'] / df['estimated_price']) * 100
+    # --- ÉTAPE 3 : CALCULS DES MARGES ---
+    # profit_potential = gain théorique à la revente après travaux
+    # On compare l'estimation IA au "Budget Total" (Prix + Travaux + Frais)
+    df['real_profit_potential'] = df['estimated_price'] - df['total_investment']
+    df['margin_pct'] = (df['real_profit_potential'] / df['estimated_price']) * 100
 
-    # 4. CALCUL DE L'INVESTMENT SCORE (0-100)
-    # A. Score de Marge (Normalisé 0-60)
-    # On considère qu'un discount de 30% est le top (60 pts)
-    margin_score = (df['discount_pct'] / 30) * 60
-    margin_score = margin_score.clip(0, 60)
+    # --- ÉTAPE 4 : LE SYSTÈME DE SCORING 2.0 (SUR 100 POINTS) ---
 
-    # B. Score de Momentum (Normalisé 0-25)
-    # Un momentum de 1.5 (accélération de 50% vs historique) = 25 pts
-    momentum_bonus = (df['momentum_score'] / 1.5) * 25
-    momentum_bonus = momentum_bonus.clip(0, 25)
+    # A. Score de Marge (40 pts) : L'écart entre prix IA et Budget Total
+    # Un profit de +25% sur investissement total = 40 pts
+    margin_score = (df['margin_pct'] / 25) * 40
+    margin_score = margin_score.clip(0, 40)
 
-    # C. Score Qualité (0-15 pts)
+    # B. Score de Rendement (30 pts) : On récompense le Cash-flow
+    # Un rendement net de 8% (best_yield) = 30 pts
+    yield_score = (df['best_yield'] / 8) * 30
+    yield_score = yield_score.clip(0, 30)
+
+    # C. Score de Momentum (20 pts) : Quartiers qui montent vite
+    # Un momentum de 1.5 (50% plus vite que l'historique) = 20 pts
+    momentum_score = (df['momentum_score'] / 1.5) * 20
+    momentum_score = momentum_score.clip(0, 20)
+
+    # D. Bonus Qualité / Airbnb (10 pts)
+    # On valorise la Licence Airbnb et les prestations de confort
     quality_bonus = (
-        df['has_terrace'] * 5 +
-        df['is_last_floor'] * 5 +
-        df['is_south_facing'] * 5
+        df['is_airbnb_ready'] * 4 +  # Licence détectée = gros bonus
+        df['has_terrace'] * 3 +
+        df['is_last_floor'] * 3
     )
+    quality_bonus = quality_bonus.clip(0, 10)
 
-    df['investment_score'] = margin_score + momentum_bonus + quality_bonus
+    # TOTAL DU SCORE D'INVESTISSEMENT
+    df['investment_score'] = margin_score + yield_score + momentum_score + quality_bonus
 
-    # 5. Filtres de sécurité
-    # On élimine les erreurs manifestes (marge > 50%) ou les prix incohérents
+    # --- ÉTAPE 5 : FILTRES DE SÉCURITÉ (LE TAMIS) ---
+    # 1. On évite les erreurs d'estimation (trop beau pour être vrai > 50%)
+    # 2. On veut une marge minimale (profit > 10% après travaux)
+    # 3. On évite les biens trop bas de gamme (prix > 55k)
     opps = df[
-        (df['discount_pct'] > 12) &
-        (df['discount_pct'] < 50) &
+        (df['margin_pct'] > 10) &
+        (df['margin_pct'] < 50) &
         (df['price'] > 55000)
     ].copy()
 
     return opps.sort_values(by='investment_score', ascending=False)
 
 def print_report(opps):
-    print(f"\n🚀 TOP {len(opps.head(15))} OPPORTUNITÉS (Tirées par Investment Score)\n")
+    """ Affiche un résumé rapide dans le terminal """
+    print(f"\n🚀 TOP {len(opps.head(15))} OPPORTUNITÉS (Ranking IA & Finance)\n")
     for _, row in opps.head(15).iterrows():
         url = f"https://www.idealista.com/inmueble/{int(row['propertyCode'])}/"
 
-        # Icônes de confort
-        icons = ""
-        if row['has_terrace']: icons += "🌳 "
-        if row['is_south_facing']: icons += "☀️ "
-        if row['is_last_floor']: icons += "🔝 "
+        # Tags visuels
+        tags = []
+        if row['is_airbnb_ready']: tags.append("✈️ AIRBNB")
+        if row['yield_airbnb'] > row['net_yield']: tags.append("💰 BOOST SAISONNIER")
+
+        tag_str = " | ".join(tags) if tags else "🏠 LONG TERME"
 
         print(f"⭐ SCORE: {int(row['investment_score'])}/100 | {row['neighborhood']}")
-        print(f"💰 Prix: {int(row['price']):,} € (Est: {int(row['estimated_price']):,} €)")
-        print(f"📈 Marge: +{row['discount_pct']:.1f}% | Momentum: {row['momentum_score']:.2f} {icons}")
+        print(f"💵 Prix: {int(row['price']):,} € | Budget Total: {int(row['total_investment']):,} €")
+        print(f"📊 Rendement: {row['best_yield']:.2f}% Net | Marge Revente: +{row['margin_pct']:.1f}%")
+        print(f"📍 {tag_str}")
         print(f"🔗 {url}")
-        print("-" * 50)
+        print("-" * 60)
+
+if __name__ == "__main__":
+    opportunities = detect_opportunities()
+    print_report(opportunities)
